@@ -7,7 +7,7 @@ analysis based on price action and chart indicators. It can be used in two ways:
 - CLI analysis via `stock_analysis.py`
 - Browser UI via `app.py`
 
-The application downloads adjusted daily price data from Yahoo Finance, calculates common technical indicators, and produces a compact composite signal for research and educational use only.
+The application downloads adjusted daily price data from Yahoo Finance, calculates common technical indicators, and produces a compact composite signal for research and educational use only. The dashboard also includes analyst-target context when available, such as mean target price, target range, and a simple analyst outlook summary.
 
 ## Project approach and delivery notes
 This project was built around a genuine personal interest in stock market analysis rather than a business use case or a strict template requirement. I selected the problem of US stock technical screening and analysis based on price action and technicals, and implemented a custom solution around that workflow as a solo project.
@@ -21,6 +21,7 @@ The project also follows the broader expected development pattern for data-drive
 - Add charts, filters, tables, and exploratory output
 - Refine the UX through iterative prompting and design feedback
 - Explore additional analysis workflows such as different time ranges and signal summaries
+- Add analyst-target context and broader market sentiment to complement the technical view
 - Optionally add AI-powered explanations or summaries in future iterations
 
 This documents the actual approach taken for the project rather than assuming a single prescribed stack or workflow.
@@ -52,8 +53,9 @@ The workflow is:
    - ATR 14
    - OBV
    - volume confirmation
-4. Build a composite score and plain-language summary for the current state.
-5. Optionally display results in JSON, terminal output, or a saved PNG chart.
+4. Optionally pull analyst target metadata from Yahoo Finance, including mean target price, target range, and consensus signal.
+5. Build a composite score and plain-language summary for the current state.
+6. Optionally display results in JSON, terminal output, or a saved PNG chart.
 
 ## App entry points
 ### CLI

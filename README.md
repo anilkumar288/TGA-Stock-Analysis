@@ -4,6 +4,8 @@ A small Python-based stock analysis project focused on price action and technica
 for US-listed equities. It downloads adjusted daily prices and calculates SMA 20/50/200,
 MACD, RSI 14, Bollinger Bands, ATR 14, OBV, volume confirmation, and a simple composite
 signal. The composite is a compact summary of the indicators—not a trading recommendation.
+The web interface also includes analyst-target context when Yahoo Finance exposes it, such as
+mean target price, target range, and a quick analyst outlook summary.
 
 ## Project approach and scope
 
@@ -23,6 +25,7 @@ vibe-coded project:
 - Add charts, filters, and tabular/summary views
 - Improve the UX through iterative prompting and refinement
 - Experiment with additional analysis workflows and display formats
+- Add analyst-target context alongside technical analysis for a broader market view
 - Optionally extend with AI-generated insights or narrative summaries
 
 This project therefore represents a tailored solution for stock technical analysis, rather than a
@@ -54,7 +57,8 @@ Start the local UI without activating the virtual environment:
 ```
 
 Then open `http://127.0.0.1:5000` in your browser. Enter a ticker and choose a
-time range to view price action, moving averages, key levels, and technical signals.
+time range to view price action, moving averages, key levels, technical signals, and analyst
+outlook context when available.
 
 At least 50 daily observations are required. The default two-year period is needed to
 make the 200-day trend and 52-week range useful. Data comes from Yahoo Finance through

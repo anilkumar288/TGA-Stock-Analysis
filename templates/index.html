@@ -71,11 +71,36 @@
           <p>{{ report.price_action.comment }}</p>
           <small>{{ report.price_action.risk }} Scenarios, not predictions.</small>
         </article>
-        <article class="panel insight-card fact-card">
-          <span>FUN FACT</span>
-          <h2>Beyond the ticker</h2>
-          <p>{{ company.fun_fact }}</p>
+        {% if analyst and (analyst.target_mean or analyst.target_low or analyst.target_high or analyst.recommendation_key) %}
+        <article class="panel insight-card analyst-card">
+          <span>ANALYST OUTLOOK</span>
+          <h2>
+            {% if analyst.target_mean %}
+              {% set upside = ((analyst.target_mean - m.close) / m.close) * 100 %}
+              {{ 'Bullish target' if upside > 0 else 'Cautious target' if upside < 0 else 'Neutral target' }}
+            {% else %}
+              Analyst view
+            {% endif %}
+          </h2>
+          <p>
+            {% if analyst.target_mean %}
+              Current price: ${{ '%.2f'|format(m.close) }} · Mean target: ${{ '%.2f'|format(analyst.target_mean) }}
+            {% else %}
+              Analyst data available, but no mean target was returned.
+            {% endif %}
+          </p>
+          <small>
+            {% if analyst.target_low and analyst.target_high %}
+              Range: ${{ '%.2f'|format(analyst.target_low) }} to ${{ '%.2f'|format(analyst.target_high) }}
+            {% elif analyst.target_mean %}
+              Target range unavailable.
+            {% endif %}
+            {% if analyst.recommendation_key %}
+              · Consensus: {{ analyst.recommendation_key }}
+            {% endif %}
+          </small>
         </article>
+        {% endif %}
       </div>
 
       <div class="panel chart-panel">

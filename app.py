@@ -90,6 +90,29 @@ def _chart_data(df: pd.DataFrame) -> dict:
     }
 
 
+def _analyst_summary(ticker: yf.Ticker, symbol: str) -> dict[str, float | str | None]:
+    """Return analyst target information when Yahoo exposes it."""
+    try:
+        info = ticker.get_info()
+    except Exception:
+        info = {}
+
+    target_mean = info.get("targetMeanPrice")
+    target_high = info.get("targetHighPrice")
+    target_low = info.get("targetLowPrice")
+    recommendation_mean = info.get("recommendationMean")
+    recommendation_key = info.get("recommendationKey")
+
+    return {
+        "symbol": symbol,
+        "target_mean": float(target_mean) if isinstance(target_mean, (int, float)) and math.isfinite(float(target_mean)) else None,
+        "target_high": float(target_high) if isinstance(target_high, (int, float)) and math.isfinite(float(target_high)) else None,
+        "target_low": float(target_low) if isinstance(target_low, (int, float)) and math.isfinite(float(target_low)) else None,
+        "recommendation_mean": float(recommendation_mean) if isinstance(recommendation_mean, (int, float)) and math.isfinite(float(recommendation_mean)) else None,
+        "recommendation_key": str(recommendation_key).title() if recommendation_key else None,
+    }
+
+
 @app.get("/")
 def index():
     symbol = request.args.get("symbol", "").strip().upper()
@@ -97,7 +120,7 @@ def index():
     if period not in PERIODS:
         period = "2y"
 
-    report = chart = company = error = None
+    report = chart = company = analyst = error = None
     if symbol:
         if not SYMBOL_PATTERN.fullmatch(symbol):
             error = "Enter a valid ticker, such as AAPL, MSFT, or BRK-B."
@@ -113,12 +136,13 @@ def index():
                 report = build_report(symbol, df)
                 chart = _chart_data(df)
                 company = _company_profile(ticker, symbol)
+                analyst = _analyst_summary(ticker, symbol)
             except Exception as exc:
                 error = str(exc) or f"Unable to analyze {symbol} right now."
 
     return render_template(
         "index.html", symbol=symbol, period=period, periods=PERIODS,
-        report=report, chart=chart, company=company, error=error,
+        report=report, chart=chart, company=company, analyst=analyst, error=error,
     )
 
 
