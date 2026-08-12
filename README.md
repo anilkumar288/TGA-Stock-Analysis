@@ -36,4 +36,4 @@ At least 50 daily observations are required. The default two-year period is need
 make the 200-day trend and 52-week range useful. Data comes from Yahoo Finance through
 `yfinance`, so it may be delayed or occasionally unavailable.
 
-For research and education only; not investment advice.
+For research and education only. This has been created as part of an assignment for TGA.
