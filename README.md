@@ -4,6 +4,28 @@ A small Python CLI that downloads adjusted daily prices and calculates SMA 20/50
 MACD, RSI 14, Bollinger Bands, ATR 14, OBV, volume confirmation, and a simple composite
 signal. The composite is a compact summary of the indicators—not a trading recommendation.
 
+## Project approach and scope
+
+This project was designed around a custom use case rather than following a fixed template or
+single framework requirement. I selected a practical stock-analysis workflow that fits
+research and education needs: load market data, inspect technical indicators, and present the
+results in a usable interface.
+
+The application was built with a custom web stack for this project, rather than requiring a
+specific Streamlit setup. In this implementation, the UI is delivered with Flask and a browser-based
+interface, while the analysis logic remains in Python. The workflow still reflects the same
+core principles expected in a data-product build, but it was created as a solo, vibe-coded project:
+
+- Load a dataset or market history for a symbol
+- Use AI-assisted coding to accelerate development and iteration
+- Add charts, filters, and tabular/summary views
+- Improve the UX through iterative prompting and refinement
+- Experiment with additional analysis workflows and display formats
+- Optionally extend with AI-generated insights or narrative summaries
+
+This project therefore represents a tailored solution for stock technical analysis, rather than a
+generic demo or one-size-fits-all template.
+
 ## Setup and usage
 
 ```powershell
