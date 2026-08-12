@@ -26,11 +26,6 @@ The project also follows the broader expected development pattern for data-drive
 
 This documents the actual approach taken for the project rather than assuming a single prescribed stack or workflow.
 
-## Current status
-- Local Git repository is initialized.
-- The app is working from the current codebase.
-- No remote GitHub repository is configured yet.
-- The project is intended for research/education and not as investment advice.
 
 ## Key files
 - `stock_analysis.py` — core analysis logic, indicator calculations, scoring model, chart export
