@@ -1,20 +1,22 @@
 # US Stock Technical Analysis
 
-A small Python CLI that downloads adjusted daily prices and calculates SMA 20/50/200,
+A small Python-based stock analysis project focused on price action and technical analysis
+for US-listed equities. It downloads adjusted daily prices and calculates SMA 20/50/200,
 MACD, RSI 14, Bollinger Bands, ATR 14, OBV, volume confirmation, and a simple composite
 signal. The composite is a compact summary of the indicators—not a trading recommendation.
 
 ## Project approach and scope
 
-This project was designed around a custom use case rather than following a fixed template or
-single framework requirement. I selected a practical stock-analysis workflow that fits
-research and education needs: load market data, inspect technical indicators, and present the
-results in a usable interface.
+This project was built around a genuine personal interest in stock market analysis rather than
+following a fixed template or a business-driven problem statement. I selected a practical
+technical-analysis workflow that fit my curiosity and learning goals: load market data, inspect
+price action and chart-based indicators, and present the results in a usable interface.
 
 The application was built with a custom web stack for this project, rather than requiring a
 specific Streamlit setup. In this implementation, the UI is delivered with Flask and a browser-based
 interface, while the analysis logic remains in Python. The workflow still reflects the same
-core principles expected in a data-product build, but it was created as a solo, vibe-coded project:
+core principles expected in a data-product build, but it was created as a solo, curiosity-driven,
+vibe-coded project:
 
 - Load a dataset or market history for a symbol
 - Use AI-assisted coding to accelerate development and iteration

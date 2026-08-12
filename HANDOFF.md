@@ -1,7 +1,8 @@
 # Project Handoff Document
 
 ## Project overview
-This project is a Python-based stock technical analysis app for US-listed equities. It can be used in two ways:
+This project is a Python-based stock analysis app for US-listed equities, focused on technical
+analysis based on price action and chart indicators. It can be used in two ways:
 
 - CLI analysis via `stock_analysis.py`
 - Browser UI via `app.py`
@@ -9,7 +10,7 @@ This project is a Python-based stock technical analysis app for US-listed equiti
 The application downloads adjusted daily price data from Yahoo Finance, calculates common technical indicators, and produces a compact composite signal for research and educational use only.
 
 ## Project approach and delivery notes
-This project was built around a chosen business and technical use case rather than a strict template requirement. I selected the problem of US stock technical screening and analysis and implemented a custom solution around that workflow as a solo project.
+This project was built around a genuine personal interest in stock market analysis rather than a business use case or a strict template requirement. I selected the problem of US stock technical screening and analysis based on price action and technicals, and implemented a custom solution around that workflow as a solo project.
 
 The UI was built with a custom Python web stack rather than being forced into a Streamlit-only pattern. In this codebase, the interface uses Flask for the browser experience, while the data processing and indicator logic remain in Python. This is a valid, project-appropriate implementation and reflects the spirit of a practical data app build created through iterative, vibe-coded development.
 
