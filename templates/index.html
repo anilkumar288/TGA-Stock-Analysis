@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Price action and technical analysis for US-listed stocks.">
+  <title>{% if report %}{{ report.symbol }} | {% endif %}TGA Market Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='company.css') }}">
+</head>
+<body class="{{ 'results-screen' if report else 'home-screen' }}">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="TGA Market Analysis home"><span class="brand-mark">T</span> TGA MARKET ANALYSIS</a>
+    <span class="market-state"><i></i> Market data via Yahoo Finance</span>
+  </header>
+
+  <main>
+    <section class="hero{% if report %} compact{% endif %}">
+      {% if not report %}
+      <h1><span>Technical analysis.</span><small class="hero-tagline">Data behind the direction.</small></h1>
+      <p class="intro">Enter a US ticker to map the trend, momentum, volatility, and volume behind the latest move.</p>
+      {% endif %}
+      <form class="search" method="get" role="search">
+        <label class="symbol-field">
+          <span>TICKER</span>
+          <input name="symbol" value="{{ symbol }}" placeholder="AAPL" maxlength="15" autocomplete="off" autofocus required aria-label="Stock ticker">
+        </label>
+        <label class="period-field">
+          <span>RANGE</span>
+          <select name="period" aria-label="Analysis range">
+            {% for value, label in periods.items() %}<option value="{{ value }}"{% if period == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+        </label>
+        <button type="submit"><span>Analyze</span><b aria-hidden="true">↗</b></button>
+      </form>
+      {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+    </section>
+
+    {% if report %}
+    {% set m = report.metrics %}
+    <section class="dashboard">
+      <div class="quote-header">
+        <div class="company-identity">
+          <span class="company-logo-wrap" aria-hidden="true">
+            <span class="company-logo-fallback">{{ company.name[:1]|upper }}</span>
+            {% if company.logo_url %}<img class="company-logo" src="{{ company.logo_url }}" alt="" onerror="this.remove()">{% endif %}
+          </span>
+          <div>
+            <p class="company-name">{{ company.name }}</p>
+            <p class="ticker">{{ report.symbol }}</p>
+            <p class="date">Adjusted close · {{ report.as_of }}</p>
+          </div>
+        </div>
+        <div class="quote"><strong>${{ '%.2f'|format(m.close) }}</strong><span class="{{ 'up' if m.daily_change_pct >= 0 else 'down' }}">{{ '%+.2f'|format(m.daily_change_pct) }}%</span></div>
+      </div>
+
+      <div class="metrics">
+        <article><span>COMPOSITE</span><strong class="rating {{ report.rating|lower|replace('/', '-')|replace(' ', '-') }}">{{ report.rating }}</strong><small>Score {{ '%+d'|format(report.score) }} of {{ report.score_range[1] }}</small></article>
+        <article><span>52-WEEK RANGE</span><strong>${{ '%.2f'|format(m['52_week_low']) }} — ${{ '%.2f'|format(m['52_week_high']) }}</strong><small>Current: ${{ '%.2f'|format(m.close) }}</small></article>
+        <article><span>RSI · 14</span><strong>{{ '%.1f'|format(m.rsi_14) }}</strong><small>{{ 'Overbought' if m.rsi_14 >= 70 else 'Oversold' if m.rsi_14 <= 30 else 'Neutral zone' }}</small></article>
+        <article><span>ATR · 14</span><strong>${{ '%.2f'|format(m.atr_14) }}</strong><small>Daily volatility</small></article>
+      </div>
+
+      <div class="insight-grid">
+        <article class="panel insight-card outlook-card">
+          <span>PRICE-ACTION OUTLOOK</span>
+          <h2>{{ report.price_action.bias }}</h2>
+          <p>{{ report.price_action.comment }}</p>
+          <small>{{ report.price_action.risk }} Scenarios, not predictions.</small>
+        </article>
+        <article class="panel insight-card fact-card">
+          <span>FUN FACT</span>
+          <h2>Beyond the ticker</h2>
+          <p>{{ company.fun_fact }}</p>
+        </article>
+      </div>
+
+      <div class="panel chart-panel">
+        <div class="panel-head"><div><span>PRICE ACTION</span><h2>{{ periods[period] }} trend</h2></div><div class="legend"><i class="close"></i>Close <i class="sma20"></i>SMA 20 <i class="sma50"></i>SMA 50 <i class="sma200"></i>SMA 200</div></div>
+        <canvas id="priceChart" height="390" aria-label="{{ report.symbol }} price chart"></canvas>
+        <div class="chart-tip" id="chartTip" hidden></div>
+      </div>
+
+      <div class="analysis-grid">
+        <section class="panel signals">
+          <div class="panel-head"><div><span>SIGNAL STACK</span><h2>Technical read</h2></div></div>
+          {% for item in report.signals %}
+          <article><i class="signal-dot {{ item.signal }}"></i><div><strong>{{ item.indicator }}</strong><p>{{ item.detail }}</p></div><b class="signal-label {{ item.signal }}">{{ item.signal }}</b></article>
+          {% endfor %}
+        </section>
+        <section class="panel levels">
+          <div class="panel-head"><div><span>KEY LEVELS</span><h2>Trend & volatility</h2></div></div>
+          <dl>
+            <div><dt>SMA 20</dt><dd>${{ '%.2f'|format(m.sma_20) }}</dd></div>
+            <div><dt>SMA 50</dt><dd>${{ '%.2f'|format(m.sma_50) }}</dd></div>
+            <div><dt>SMA 200</dt><dd>{% if m.sma_200 is not none %}${{ '%.2f'|format(m.sma_200) }}{% else %}N/A{% endif %}</dd></div>
+            <div><dt>Bollinger range</dt><dd>${{ '%.2f'|format(m.bollinger_lower) }} — ${{ '%.2f'|format(m.bollinger_upper) }}</dd></div>
+            <div><dt>MACD / signal</dt><dd>{{ '%.2f'|format(m.macd) }} / {{ '%.2f'|format(m.macd_signal) }}</dd></div>
+          </dl>
+        </section>
+      </div>
+    </section>
+    {% else %}
+    <section class="empty-grid" aria-hidden="true"><div>01<br><span>Trend</span></div><div>02<br><span>Momentum</span></div><div>03<br><span>Volatility</span></div><div>04<br><span>Volume</span></div></section>
+    {% endif %}
+  </main>
+  <footer>
+    <span class="academy-note">
+      <a class="academy-logo-link" href="https://www.thegenacademy.com/" target="_blank" rel="noopener noreferrer">
+        <img src="{{ url_for('static', filename='gen-academy-logo.png') }}" alt="The Gen Academy">
+      </a>
+      <span class="academy-copy">Built for The Gen Academy with code, curiosity, and absolutely no insider information.</span>
+    </span>
+  </footer>
+  {% if chart %}<script>window.chartData = {{ chart|tojson }};</script><script src="{{ url_for('static', filename='chart.js') }}"></script>{% endif %}
+</body>
+</html>
