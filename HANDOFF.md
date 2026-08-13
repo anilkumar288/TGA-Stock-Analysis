@@ -42,6 +42,7 @@ The workflow is:
 2. Validate the returned dataset.
 3. Compute indicators such as:
    - SMA 20/50/200
+   - EMA 12/26
    - MACD
    - RSI 14
    - Bollinger Bands
@@ -50,7 +51,8 @@ The workflow is:
    - volume confirmation
 4. Optionally pull analyst target metadata from Yahoo Finance, including mean target price, target range, and consensus signal.
 5. Build a composite score and plain-language summary for the current state.
-6. Optionally display results in JSON, terminal output, or a saved PNG chart.
+6. Stress-test the next-session composite across hypothetical closes from -2 to +2 ATR.
+7. Optionally display results in JSON, terminal output, or a saved PNG chart.
 
 ## App entry points
 ### CLI

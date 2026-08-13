@@ -1,11 +1,13 @@
 # US Stock Technical Analysis
 
 A small Python-based stock analysis project focused on price action and technical analysis
-for US-listed equities. It downloads adjusted daily prices and calculates SMA 20/50/200,
+for US-listed equities. It downloads adjusted daily prices and calculates SMA 20/50/200, EMA 12/26,
 MACD, RSI 14, Bollinger Bands, ATR 14, OBV, volume confirmation, and a simple composite
 signal. The composite is a compact summary of the indicators—not a trading recommendation.
 The web interface also includes analyst-target context when Yahoo Finance exposes it, such as
 mean target price, target range, and a quick analyst outlook summary.
+Its Next-Session Signal Map also stress-tests the composite across closes from -2 to +2 ATR,
+showing where the technical rating may strengthen, weaken, or flip before the move occurs.
 
 ## Project approach and scope
 

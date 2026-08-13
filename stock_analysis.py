@@ -164,7 +164,8 @@ def build_report(symbol: str, df: pd.DataFrame) -> dict:
         "metrics": {
             "close": _number(price), "daily_change_pct": _number((price / previous["Close"] - 1) * 100),
             "sma_20": _number(latest["SMA_20"]), "sma_50": _number(sma50),
-            "sma_200": _number(sma200), "rsi_14": _number(rsi), "macd": _number(macd),
+            "sma_200": _number(sma200), "ema_12": _number(latest["EMA_12"]),
+            "ema_26": _number(latest["EMA_26"]), "rsi_14": _number(rsi), "macd": _number(macd),
             "macd_signal": _number(macd_signal), "atr_14": _number(latest["ATR_14"]),
             "bollinger_lower": _number(latest["BB_lower"]),
             "bollinger_upper": _number(latest["BB_upper"]),
@@ -176,6 +177,42 @@ def build_report(symbol: str, df: pd.DataFrame) -> dict:
     }
 
 
+def build_scenario_map(symbol: str, df: pd.DataFrame) -> dict:
+    """Stress-test the composite signal across plausible next-session closes."""
+    latest = df.iloc[-1]
+    close = float(latest["Close"])
+    atr = float(latest["ATR_14"])
+    if not math.isfinite(atr) or atr <= 0:
+        raise ValueError("A valid ATR is required to build the scenario map")
+
+    scenarios = []
+    for atr_move in (-2, -1, 0, 1, 2):
+        hypothetical_close = max(0.01, close + atr_move * atr)
+        next_index = df.index[-1] + pd.tseries.offsets.BDay(1)
+        next_row = pd.DataFrame({
+            "Close": [hypothetical_close],
+            "High": [max(close, hypothetical_close)],
+            "Low": [min(close, hypothetical_close)],
+            "Volume": [float(latest["Volume_SMA_20"])],
+        }, index=[next_index])
+        source = pd.concat([df[["Close", "High", "Low", "Volume"]], next_row])
+        scenario_report = build_report(symbol, calculate_indicators(source))
+        scenarios.append({
+            "atr_move": atr_move,
+            "price": _number(hypothetical_close),
+            "change_pct": _number((hypothetical_close / close - 1) * 100),
+            "score": scenario_report["score"],
+            "rating": scenario_report["rating"],
+        })
+
+    current = build_report(symbol, df)
+    return {
+        "atr": _number(atr), "current_score": current["score"],
+        "current_rating": current["rating"], "scenarios": scenarios,
+        "assumption": "Next-session close only; volume is held at its 20-day average.",
+    }
+
+
 def print_report(report: dict) -> None:
     m = report["metrics"]
     print(f"\n{report['symbol']} technical analysis - {report['as_of']}")
@@ -184,6 +221,7 @@ def print_report(report: dict) -> None:
     print(f"52-week range: ${m['52_week_low']:.2f} - ${m['52_week_high']:.2f}")
     print(f"SMA 20/50/200: {m['sma_20']:.2f} / {m['sma_50']:.2f} / " +
           (f"{m['sma_200']:.2f}" if m['sma_200'] is not None else "N/A"))
+    print(f"EMA 12/26: {m['ema_12']:.2f} / {m['ema_26']:.2f}")
     print(f"RSI 14: {m['rsi_14']:.1f}  MACD/signal: {m['macd']:.2f}/{m['macd_signal']:.2f}")
     print(f"ATR 14: ${m['atr_14']:.2f}  Bollinger band: ${m['bollinger_lower']:.2f} - ${m['bollinger_upper']:.2f}")
     print(f"\nComposite: {report['rating']} ({report['score']:+d})")

@@ -10,7 +10,7 @@ import pandas as pd
 import yfinance as yf
 from flask import Flask, render_template, request
 
-from stock_analysis import build_report, calculate_indicators
+from stock_analysis import build_report, build_scenario_map, calculate_indicators
 
 
 app = Flask(__name__)
@@ -120,7 +120,7 @@ def index():
     if period not in PERIODS:
         period = "2y"
 
-    report = chart = company = analyst = error = None
+    report = chart = company = analyst = scenario_map = error = None
     if symbol:
         if not SYMBOL_PATTERN.fullmatch(symbol):
             error = "Enter a valid ticker, such as AAPL, MSFT, or BRK-B."
@@ -134,6 +134,7 @@ def index():
                 if len(df) < 50:
                     raise ValueError("Not enough price history was returned for a reliable analysis.")
                 report = build_report(symbol, df)
+                scenario_map = build_scenario_map(symbol, df)
                 chart = _chart_data(df)
                 company = _company_profile(ticker, symbol)
                 analyst = _analyst_summary(ticker, symbol)
@@ -142,7 +143,8 @@ def index():
 
     return render_template(
         "index.html", symbol=symbol, period=period, periods=PERIODS,
-        report=report, chart=chart, company=company, analyst=analyst, error=error,
+        report=report, chart=chart, company=company, analyst=analyst,
+        scenario_map=scenario_map, error=error,
     )
 
 

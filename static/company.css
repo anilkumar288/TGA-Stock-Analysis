@@ -92,6 +92,18 @@
 }
 
 .outlook-card { border-left: 4px solid var(--acid); }
+.scenario-panel { padding: 28px; margin-top: 24px; }
+.scenario-panel .panel-head { margin-bottom: 10px; }
+.scenario-panel .panel-head > small, .scenario-note { font: 10px DM Mono, monospace; color: var(--muted); }
+.scenario-intro { margin: 0 0 22px; color: var(--muted); font-size: 13px; }
+.scenario-grid { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); }
+.scenario-grid article { padding: 18px; display: flex; flex-direction: column; gap: 7px; border-right: 1px solid var(--line); }
+.scenario-grid article:last-child { border: 0; }
+.scenario-grid article > span, .scenario-grid article > small, .scenario-grid article > em { font: 10px DM Mono, monospace; color: var(--muted); font-style: normal; }
+.scenario-grid article > strong { font-size: 19px; }
+.scenario-grid article > b { font-size: 12px; }
+.scenario-current { background: #f1f8d8; box-shadow: inset 0 3px 0 var(--acid); }
+.scenario-note { display: block; margin-top: 14px; }
 .fact-card { background: var(--ink); color: var(--card); }
 .fact-card > span, .fact-card p { color: #b9c2bd; }
 
@@ -99,6 +111,8 @@
   .company-identity { gap: 12px; }
   .company-logo-wrap { width: 52px; height: 52px; flex-basis: 52px; }
   .insight-grid { grid-template-columns: 1fr; }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .scenario-grid article { display: grid; grid-template-columns: 55px 1fr 55px 1fr 55px; align-items: center; border-right: 0; border-bottom: 1px solid var(--line); }
 }
 
 footer {

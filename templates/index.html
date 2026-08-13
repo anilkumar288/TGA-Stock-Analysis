@@ -109,6 +109,22 @@
         <div class="chart-tip" id="chartTip" hidden></div>
       </div>
 
+      <section class="panel scenario-panel">
+        <div class="panel-head"><div><span>NEXT-SESSION SIGNAL MAP</span><h2>Where the technical read could change</h2></div><small>1 ATR = ${{ '%.2f'|format(scenario_map.atr) }}</small></div>
+        <p class="scenario-intro">A forward stress test of the composite—not a price forecast. It shows how sensitive today’s reading is to the next close.</p>
+        <div class="scenario-grid">
+          {% for item in scenario_map.scenarios %}
+          <article class="{{ 'scenario-current' if item.atr_move == 0 else '' }}">
+            <span>{{ '%+d'|format(item.atr_move) }} ATR</span><strong>${{ '%.2f'|format(item.price) }}</strong>
+            <small>{{ '%+.1f'|format(item.change_pct) }}%</small>
+            <b class="rating {{ item.rating|lower|replace('/', '-')|replace(' ', '-') }}">{{ item.rating }}</b>
+            <em>Score {{ '%+d'|format(item.score) }}</em>
+          </article>
+          {% endfor %}
+        </div>
+        <small class="scenario-note">{{ scenario_map.assumption }} Intraday path, gaps, and unusual volume can produce different results.</small>
+      </section>
+
       <div class="analysis-grid">
         <section class="panel signals">
           <div class="panel-head"><div><span>SIGNAL STACK</span><h2>Technical read</h2></div></div>
@@ -122,6 +138,8 @@
             <div><dt>SMA 20</dt><dd>${{ '%.2f'|format(m.sma_20) }}</dd></div>
             <div><dt>SMA 50</dt><dd>${{ '%.2f'|format(m.sma_50) }}</dd></div>
             <div><dt>SMA 200</dt><dd>{% if m.sma_200 is not none %}${{ '%.2f'|format(m.sma_200) }}{% else %}N/A{% endif %}</dd></div>
+            <div><dt>EMA 12</dt><dd>${{ '%.2f'|format(m.ema_12) }}</dd></div>
+            <div><dt>EMA 26</dt><dd>${{ '%.2f'|format(m.ema_26) }}</dd></div>
             <div><dt>Bollinger range</dt><dd>${{ '%.2f'|format(m.bollinger_lower) }} — ${{ '%.2f'|format(m.bollinger_upper) }}</dd></div>
             <div><dt>MACD / signal</dt><dd>{{ '%.2f'|format(m.macd) }} / {{ '%.2f'|format(m.macd_signal) }}</dd></div>
           </dl>
