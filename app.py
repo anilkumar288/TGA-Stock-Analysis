@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import re
+from pathlib import Path
 from urllib.parse import quote, urlparse
 
 import pandas as pd
@@ -14,6 +15,10 @@ from stock_analysis import build_report, build_scenario_map, calculate_indicator
 
 
 app = Flask(__name__)
+YFINANCE_CACHE_DIR = Path(app.instance_path) / "yfinance-cache"
+YFINANCE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+yf.set_tz_cache_location(str(YFINANCE_CACHE_DIR))
+
 PERIODS = {"6mo": "6 months", "1y": "1 year", "2y": "2 years", "5y": "5 years"}
 SYMBOL_PATTERN = re.compile(r"^[A-Z0-9^][A-Z0-9.^=-]{0,14}$")
 
