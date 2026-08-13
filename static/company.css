@@ -1,3 +1,29 @@
+.market-animal {
+  width: 44px;
+  height: 30px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    padding-inline: 16px;
+  }
+
+  .brand {
+    gap: 8px;
+    letter-spacing: .08em;
+  }
+
+}
+
+@media (max-width: 390px) {
+  .brand span {
+    font-size: 10px;
+  }
+
+}
+
 .company-identity {
   display: flex;
   align-items: center;

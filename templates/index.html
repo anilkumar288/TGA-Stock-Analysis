@@ -13,7 +13,11 @@
 </head>
 <body class="{{ 'results-screen' if report else 'home-screen' }}">
   <header class="topbar">
-    <a class="brand" href="/" aria-label="TGA Market Analysis home"><span class="brand-mark">T</span> TGA MARKET ANALYSIS</a>
+    <a class="brand" href="/" aria-label="TGA Market Analysis home">
+      <img class="market-animal" src="{{ url_for('static', filename='market-bull.png') }}" alt="">
+      <span>TGA MARKET ANALYSIS</span>
+      <img class="market-animal" src="{{ url_for('static', filename='market-bear.png') }}" alt="">
+    </a>
     <span class="market-state"><i></i> Market data via Yahoo Finance</span>
   </header>
 
